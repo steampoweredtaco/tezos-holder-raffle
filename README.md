@@ -30,4 +30,8 @@ VERIFY_LEVEL = None
 > python tezos_raffles
 
 # Limitations
-Currently the code only supports up to 10000 total holders at any time. If you need more file an issue.
+Currently, the code only supports up to 10000 total holders at any time. If you need more file an issue.
+
+# If you like this....
+Drop a few tez my way on Tezos to show your appreciate and motivate me to keep creating and publicly releasing scripts and tools for tezos.
+`tacoby.tez tz1aJznwEALEC6WpLaRspXCm7YyATxdNftVg`
