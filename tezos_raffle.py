@@ -1,37 +1,35 @@
 import datetime
 import random
 from collections import defaultdict
-from pprint import pp
 from random import choices
 from time import sleep
 
 import requests
-from dateutil.tz import UTC
 from pytz import UTC
 
 CONTRACT = "KT1H436mFXZ1KqCVDUv2YQ23RnqMYKThhqah"
-TOKEN_STORAGE_PATH="assets/token_metadata"
-LEDGER_PATH="assets.ledger"
-
+LEDGER_PATH = "assets.ledger"
 TZXT_API = "https://api.tzkt.io/v1"
 
 # Needs to be in ISO format, so May 9th 1980 at 2:00 and 31 seconds is 1980-05-09T02:00:31+00Z
 # You may set this to None to pick the most recent time on the network
-DATE_TO_SNAPSHOT="2022-04-23T02:00:31+00Z"
-#NUM_OF_WINNERS is the number of winners you want to pick, a winner has equal chance of being picked each NUM times
-NUM_OF_WINNERS=100
+DATE_TO_SNAPSHOT = "2022-04-23T02:00:31+00Z"
+# NUM_OF_WINNERS is the number of winners you want to pick, a winner has equal chance of being picked each NUM times
+NUM_OF_WINNERS = 100
 # WAIT_LEVELS is how many blocks on tezos to wait from the start of running this program to get the hash
 # for the random seeders.  This helps earn trust that the selection is random and it is not feasiable to have
 # ran this program multiple times to force a winner
 WAIT_LEVELS = 1
-#VERIFY_LEVEL if not None, specifies the level which the raffle was originally ran on and you can set this
-#to verify/get the same results as when this was ran
+# VERIFY_LEVEL if not None, specifies the level which the raffle was originally ran on and you can set this
+# to verify/get the same results as when this was ran
 VERIFY_LEVEL = None
+
 
 def pick_winners(addresses, hash, weights):
     random.seed(hash)
     winners = choices(addresses, weights, k=NUM_OF_WINNERS)
     return winners
+
 
 def wait_for_level_and_get_seed(sess, level):
     while True:
@@ -68,6 +66,7 @@ def get_holders(sess):
         addresses.append(address)
         weights.append(amount / total)
     return addresses, entries, weights
+
 
 def run_raffle():
     start_time = datetime.datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S+00Z")
