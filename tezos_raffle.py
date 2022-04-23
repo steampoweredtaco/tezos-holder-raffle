@@ -9,7 +9,7 @@ from pytz import UTC
 
 CONTRACT = "KT1H436mFXZ1KqCVDUv2YQ23RnqMYKThhqah"
 LEDGER_PATH = "assets.ledger"
-TZXT_API = "https://api.tzkt.io/v1"
+TZKT_API = "https://api.tzkt.io/v1"
 
 # Needs to be in ISO format, so May 9th 1980 at 2:00 and 31 seconds is 1980-05-09T02:00:31+00Z
 # You may set this to None to pick the most recent time on the network
@@ -33,7 +33,7 @@ def pick_winners(addresses, hash, weights):
 
 def wait_for_level_and_get_seed(sess, level):
     while True:
-        resp = sess.get(TZXT_API + f"/blocks/{level + WAIT_LEVELS}")
+        resp = sess.get(TZKT_API + f"/blocks/{level + WAIT_LEVELS}")
         if resp.status_code != 200:
             print('.', end='')
             sleep(10)
@@ -45,13 +45,13 @@ def wait_for_level_and_get_seed(sess, level):
 
 
 def get_holders(sess):
-    resp = sess.get(TZXT_API + "/statistics",
+    resp = sess.get(TZKT_API + "/statistics",
                     params={"timestamp.le": DATE_TO_SNAPSHOT, "sort.desc": "level", "limit": 1})
     level_at_requested_time = resp.json()[0]['level']
     latest_time_at_requested_time = resp.json()[0]['timestamp']
     print(
         f"Gathering owners at {DATE_TO_SNAPSHOT} from block level {level_at_requested_time} at {latest_time_at_requested_time}")
-    resp = sess.get(TZXT_API + f"/contracts/{CONTRACT}/bigmaps/{LEDGER_PATH}/historical_keys/{level_at_requested_time}",
+    resp = sess.get(TZKT_API + f"/contracts/{CONTRACT}/bigmaps/{LEDGER_PATH}/historical_keys/{level_at_requested_time}",
                     params={"limit": 10000, "value.ne": "0"})
     entries = defaultdict(int)
     total = 0
@@ -97,7 +97,7 @@ def run_raffle():
 
 
 def get_current_level(sess):
-    resp = sess.get(TZXT_API + "/head")
+    resp = sess.get(TZKT_API + "/head")
     hash, level, timestamp = resp.json()['hash'], resp.json()['level'], resp.json()['timestamp']
     print(f"current level on chain is {level} at {timestamp} with {hash}, waiting for {level + WAIT_LEVELS}")
     return level
