@@ -7,8 +7,18 @@ from time import sleep
 import requests
 from pytz import UTC
 
-CONTRACT = "KT1H436mFXZ1KqCVDUv2YQ23RnqMYKThhqah"
-LEDGER_PATH = "assets.ledger"
+
+CONTRACT = ""
+LEDGER_PATH = "ledger"
+
+# To exclude public addresses from winning.
+EXCLUDE_ADDRESSES = []
+
+# As an example, the following parameters work for batbits
+# CONTRACT = "KT1H436mFXZ1KqCVDUv2YQ23RnqMYKThhqah"
+# LEDGER_PATH = "assets.ledger"
+# EXCLUDE_ADDRESSES = ['tz1bZ7eUmhbV99wy3qZxJXrTAVj3LARQq791']
+
 TZKT_API = "https://api.tzkt.io/v1"
 
 # Needs to be in ISO format, so May 9th 1980 at 2:00 and 31 seconds is 1980-05-09T02:00:31+00Z
@@ -56,6 +66,8 @@ def get_holders(sess):
     entries = defaultdict(int)
     total = 0
     for token in resp.json():
+        if token["key"]["address"] in EXCLUDE_ADDRESSES:
+            continue
         entries[token["key"]["address"]] += int(token["value"])
         total += int(token["value"])
         # print(f'id: {token["key"]["nat"]} owner:{token["key"]["address"]} amount:{token["value"]}')
